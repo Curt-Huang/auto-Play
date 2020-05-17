@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 300px;
+            height: 150px;
+            background-color: #666;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .wrap {
+            width: 1500px;
+            height: 150px;
+            background-color: red;
+            position: absolute;
+            font-size: 0;
+            left: 0;
+            top: 0;
+        }
+
+        .wrap img {
+            width: 300px;
+        }
+
+        .buttons {
+            width: 100px;
+            height: 15px;
+            position: absolute;
+            left: 10px;
+            bottom: 10px;
+
+        }
+
+        .buttons span {
+            width: 15px;
+            height: 15px;
+            background-color: #fff;
+            border-radius: 7.5px;
+            display: inline-block;
+            text-align: center;
+            line-height: 15px;
+        }
+
+        .arrow {
+            position: absolute;
+            width: 100%;
+            height: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+
+        }
+
+        .arrow a {
+            width: 30px;
+            height: 30px;
+            float: left;
+            text-align: center;
+            line-height: 30px;
+            background-color: rgba(0, 0, 0, .5);
+            font-size: 18px;
+
+        }
+
+        .arrow .right {
+            float: right;
+        }
+
+        .buttons .red {
+            background-color: red;
+        }
+
+        .greed {
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="wrap">
+            <img src="img/lun1.jpg" alt="">
+            <img src="img/lun2.jpg" alt="">
+            <img src="img/lun3.jpg" alt="">
+            <img src="img/lun4.jpg" alt="">
+
+        </div>
+        <div class="buttons">
+            <!-- <span class="red">1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>4</span>
+            <span>5</span> -->
+        </div>
+        <div class="arrow">
+            <a class="left">&lt;</a>
+            <a class="right">&gt;</a>
+        </div>
+        <script src="animation.js"></script>
+        <script>
+            // 获取图片的dom节点
+            var imgs = document.querySelectorAll('.wrap img');
+            // 获取小圆点的父Dom节点
+            var buttons = document.querySelector('.buttons');
+            // 获取右面轮播按钮
+            var btnr = document.querySelector('.right');
+            // 获取左面轮播按钮
+            var btnl = document.querySelector('.left');
+            // debugger
+            // 获取整个的图片整体wrap
+            var wrap = document.querySelector('.wrap');
+            // 获取整个方框
+            var container = document.querySelector('.container')
+            // console.log(img[1].offsetLeft);
+            addRidius();
+
+            // 圆点自增函数
+            function addRidius() {
+                for (i = 0; i < imgs.length; i++) {
+                    var span = document.createElement('span')
+                    // 给动态创建的元素，添加索引值
+                    span.myIndex = i;
+                    // 点击圆点，图片顺序改变
+                    // 动态创建的元素，我们使用事件委托,但是原生的事件委托比较麻烦，我们就是直接在创建的时候添加点击事件
+                    span.onclick = function () {
+                        pageIndex = this.myIndex
+                        if (pageIndex == 4) {
+                            pageIndex = 0;
+                            wrap.style.left = 0
+                        }
+                        // 每次移动的距离
+                        var moveLength = pageIndex * imgs[0].offsetWidth
+                        // 调用动画
+                        // 要移动的节点 当前节点的位置
+                        animation(wrap, wrap.offsetLeft, -moveLength, 500, 20);
+
+                        roundStyle()
+                        // 给圆点添加样式
+                    }
+                    if (i == 0) {
+                        span.className = 'red'
+                    }
+                    buttons.appendChild(span)
+                }
+            };
+            var pageIndex = 0;
+
+
+
+            // 点击右侧按钮 实现轮播
+            btnr.onclick = function () {
+                if (pageIndex == 4) {
+                    pageIndex = 0;
+                    wrap.style.left = 0
+                }
+                // 当点击按钮时，让页面+1
+                pageIndex++;
+                //    每次移动的距离
+                var moveLength = pageIndex * imgs[0].offsetWidth
+                // 调用动画
+                // 要移动的节点 当前节点的位置
+                animation(wrap, wrap.offsetLeft, -moveLength, 500, 20);
+
+                roundStyle()
+                // 给圆点添加样式
+            }
+
+            // 点击左侧按钮 实现轮播
+            btnl.onclick = function () {
+                if (pageIndex == 0) {
+                    // console.log(imgs.length)
+                    pageIndex = imgs.length;  //4 4
+                    wrap.style.left = -(imgs.length) * 300 + 'px'
+                }
+                // 当点击按钮时，让页面+1
+                pageIndex--;
+                //    每次移动的距离
+                var moveLength = pageIndex * imgs[0].offsetWidth
+                // 调用动画
+                // 要移动的节点 当前节点的位置
+                animation(wrap, wrap.offsetLeft, -moveLength, 500, 20);
+
+                roundStyle()
+                // 给圆点添加样式
+            }
+
+            // 动态给封装原点封装函数
+            var roundStyle = function () {
+                // 实现小圆点随着点击事件进行变化
+                // 首先获取所有的小圆点
+                var spans = document.querySelectorAll('.buttons span');
+                // console.log(spans)
+                // 运用排他思想，先把所有小圆点样式清除
+                for (var i = 0; i < spans.length; i++) {
+                    spans[i].className = '';
+                }
+                console.log(spans)
+                // 当点击到克隆的位置时，将样式设置给第一个小圆点
+                if (pageIndex == spans.length) {
+                    spans[0].className = 'red';
+                } else {
+                    // 给当前的小圆点，动态的添加页面
+                    spans[pageIndex].className = 'red'
+                }
+
+            }
+
+
+            var timeId = null
+            //自动轮播
+            var autoPlay = function () {
+                timeId=setInterval(function () {
+                    btnr.click()
+                }, 1000)
+            }
+            autoPlay()
+            // 鼠标进入的时候，停止轮播
+            container.onmouseenter=function () {
+                clearInterval(timeId)
+            }
+            // 鼠标移除的时候，开始轮播
+            container.onmouseleave=function () {
+                autoPlay()
+            }
+            // 最后一张平滑过渡到第一张
+            // 先拷贝第一张图片，将拷贝的图片放到轮播图的最后
+            var firstImg = document.querySelector('.wrap img:nth-child(1)')
+            console.log(firstImg);
+            // 将li放到ul的末尾
+            var copyLi = firstImg.cloneNode(true)
+            // copyLi.className='nulls' 深拷贝 添加类，不会影响到原对象 因此经过思考，应该是一开始就获取到了wrap的length，然后后来才将节点添加到轮播图的后面，所以不会对这个圆点的个数造成影响
+            // 将拷贝的图片添加到末尾
+            wrap.appendChild(copyLi)
+        </script>
+    </div>
+</body>
+
+</html>
